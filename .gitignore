@@ -9,6 +9,12 @@
 *.psproj.psbuild
 *.psbuild
 
+# Terraform Files
+*.tfstate
+#vars.tf
+#variables.tf
+#*.tfvars
+
 #VS Code Files
 *.vscode
 
