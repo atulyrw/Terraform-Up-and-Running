@@ -1,5 +1,33 @@
+terraform {
+  backend "s3" {
+    bucket = "tfuar-remote-state"
+    key    = "stage/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
 provider "aws" {
     region = "us-east-2"
+}
+
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config {
+    bucket = "tfuar-remote-state"
+    key    = "stage/data-stores/mysql/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+data "template_file" "user_data" {
+  template = "${file("user-data.sh")}"
+
+  vars {
+    server_port = "${var.server_port}"
+    db_address  = "${data.terraform_remote_state.db.address}"
+    db_port     = "${data.terraform_remote_state.db.port}"
+  }
 }
 
 resource "aws_launch_configuration" "example" {
