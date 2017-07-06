@@ -10,13 +10,15 @@ provider "aws" {
     region = "us-east-2"
 }
 
-data "terraform_remote_state" "db" {
-  backend = "s3"
+resource "aws_launch_configuration" "example" {
+  image_id        = "ami-33ab8f56"
+  instance_type   = "t2.micro"
+  security_groups = ["${aws_security_group.instance.id}"]
 
-  config {
-    bucket = "tfuar-remote-state"
-    key    = "stage/data-stores/mysql/terraform.tfstate"
-    region = "us-east-1"
+  user_data = "${data.template_file.user_data.rendered}"
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -27,22 +29,6 @@ data "template_file" "user_data" {
     server_port = "${var.server_port}"
     db_address  = "${data.terraform_remote_state.db.address}"
     db_port     = "${data.terraform_remote_state.db.port}"
-  }
-}
-
-resource "aws_launch_configuration" "example" {
-  image_id        = "ami-33ab8f56"
-  instance_type   = "t2.micro"
-  security_groups = ["${aws_security_group.instance.id}"]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p "${var.server_port}" &
-              EOF
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -119,5 +105,15 @@ resource "aws_security_group" "elb" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config {
+    bucket = "tfuar-remote-state"
+    key    = "stage/data-stores/mysql/terraform.tfstate"
+    region = "us-east-1"
   }
 }
