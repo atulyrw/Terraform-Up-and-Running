@@ -10,7 +10,7 @@
 *.psbuild
 
 # Terraform Files
-/.terraform
+*.terraform
 *.tfstate*
 #vars.tf
 #variables.tf
