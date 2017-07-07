@@ -3,6 +3,7 @@
 /Endpoints
 /.Secret
 /_Secret
+/chp4-modules-live
 
 # PowerShell Studio Files
 *.temppoint.*
