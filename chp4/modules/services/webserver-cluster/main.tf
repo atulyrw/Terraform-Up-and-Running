@@ -1,5 +1,9 @@
 terraform {
-  #required_version = ">= 0.8, < 0.9"
+  backend "s3" {
+    bucket = "remote-state-tfuar"
+    key    = "modules/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 resource "aws_launch_configuration" "example" {
