@@ -1,1 +1,0 @@
-Working files for the "Terraform Up and Running" book
