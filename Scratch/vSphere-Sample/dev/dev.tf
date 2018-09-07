@@ -17,5 +17,3 @@ module "small-vm" {
     vsphere_vm_small_folder  = "${vsphere-folder.terraform-test.path}"
     vsphere_vm_small_network = "${var.vsphere_vmnetwork}"
 }
-
-/*
